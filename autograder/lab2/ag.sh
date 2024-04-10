@@ -1,5 +1,7 @@
 #! /bin/sh
 
+echo "task1-a"
+
 rm task1 task2
 
 gcc task1.c -o task1
@@ -28,4 +30,5 @@ gcc task2.c -o task2 && touch empty_file
 ./task2 empty_file
 
 #0
+
 
