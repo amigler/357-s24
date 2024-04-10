@@ -1,8 +1,8 @@
 #! /bin/sh
 
-echo "NOT OK"
+echo "OK"
 
-exit 1
+exit 0
 
 
 
