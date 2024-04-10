@@ -1,6 +1,6 @@
 #! /bin/sh
 
-echo "OK"
+echo "NOT OK"
 
 exit 0
 
