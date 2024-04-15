@@ -13,14 +13,15 @@ echo -e "\ntask1a (expected / actual)"
 diff -y <(echo -e "-some\n-arguments\n-dashes") ag_out && echo "SUCCESS: task1 a"
 
 ./task1 no args with dashes > ag_out
-diff -yw <(echo "") ag_out && echo "SUCCESS: task1 b"
+echo -e "\ntask1b (no output exected)"
+diff -yw <(echo -e "") ag_out && echo "SUCCESS: task1 b"
 
 ./task1 -all -args -with -dashes > ag_out
 echo -e "\ntask1c (expected / actual)"
 diff -y <(echo -e "-all\n-args\n-with\n-dashes") ag_out && echo "SUCCESS: task1 c"
 
 
-echo -e "--task2--"
+echo -e "\n--task2--"
 
 gcc task2.c -o task2
 
