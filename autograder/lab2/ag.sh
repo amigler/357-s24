@@ -2,7 +2,7 @@
 
 rm -f task1 task2 ag_out
 
-set -e
+#set -e
 
 echo -e "--task1--"
 
