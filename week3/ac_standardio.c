@@ -9,21 +9,21 @@ int main(int argc, char *argv[]) {
 
     FILE *fp = fopen(argv[1], "r");
 
-    /*
     while  ((c = fgetc(fp)) != EOF) {
         if (c == 'a') {
-            count = count + 1;
+            count++;
         }
     }
     printf("a count: %d\n", count);
-    */
 
+    /*
     //char *s;  // pointer to a character (address in  memory)
     //char *s[100]; // 100 char * (100 x memory addresses)
     char s[100];  // 99 characters + NULL terminator
     while (fgets(s, 100, fp) != NULL) {
         printf("Read line: %s", s);
     }
+    */
 
     fclose(fp);
     

@@ -5,7 +5,7 @@
 
 int main(int argc, char* argv[]) {
     printf();
-    return EXIST_SUCCESS;
+    return EXIT_SUCCESS;
 }
 
 

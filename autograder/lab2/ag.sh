@@ -1,38 +1,50 @@
 #! /bin/sh
 
-echo "OK"
+rm -f task1 task2 ag_out
 
-exit 0
-
-
-
-rm -f task1 task2
+#task1
 
 gcc task1.c -o task1
 
-./task1 here are -some command-line -arguments with some -dashes
+./task1 here are -some command-line -arguments with some -dashes > ag_out
 
-#-some
-#-arguments
-#-dashes
+echo -e "\ntask1a (expected / actual)"
+diff -y <(echo -e "-some\n-arguments\n-dashes") ag_out && echo "SUCCESS: task1 a"
+
+./task1 no args with dashes > ag_out
+
+echo -e "\ntask1b (empty file expected)"
+if [ -s ag_out ]; then
+    # The file is not-empty.
+    echo "ERROR: task1 b (output should be empty)"
+else
+    echo "SUCCESS: task1 b"
+fi
+
+./task1 -all -args -with -dashes > ag_out
+
+echo -e "\ntask1c (expected / actual)"
+diff -y <(echo -e "-all\n-args\n-with\n-dashes") ag_out && echo "SUCCESS: task1 c"
 
 
-./task1 no args with dashes
+#task 2
 
-./task1 -all -args -with -dashes
+gcc task2.c -o task2
+echo -e "   \t a a aaa\t \n       abc " > test2a
+./task2 test2a > ag_out
 
-
-gcc task2.c -o task2 && echo "   \t a a aaa\t \n       abc " > test2a
-
-./task2 test2a
+echo -e "\ntask2a (expected / actual)"
+diff -yw <(echo -e "17") ag_out && echo "SUCCESS: task2 a"
 
 #17
 
 
-gcc task2.c -o task2 && touch empty_file
+touch empty_file
 
-./task2 empty_file
+./task2 empty_file > ag_out
+
+echo -e "\ntask2b (expected / actual)"
+diff -yw <(echo "0") ag_out && echo "SUCCESS: task2 b"
 
 #0
-
 
