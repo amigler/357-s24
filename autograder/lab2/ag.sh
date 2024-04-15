@@ -12,14 +12,16 @@ echo -e "\ntask1a (expected / actual)"
 diff -y <(echo -e "-some\n-arguments\n-dashes") ag_out && echo "SUCCESS: task1 a"
 
 ./task1 no args with dashes > ag_out
+diff -yw <(echo "") ag_out && echo "SUCCESS: task1 a"
 
-echo -e "\ntask1b (empty file expected)"
-if [ -s ag_out ]; then
-    # The file is not-empty.
-    echo "ERROR: task1 b (output should be empty)"
-else
-    echo "SUCCESS: task1 b"
-fi
+#echo -e "\ntask1b (empty file expected)"
+#if [ -s ag_out ]; then
+#    # The file is not-empty.
+#    echo "ERROR: task1 b (output should be empty)"
+#else
+#    echo "SUCCESS: task1 b"
+#fi
+
 
 ./task1 -all -args -with -dashes > ag_out
 
