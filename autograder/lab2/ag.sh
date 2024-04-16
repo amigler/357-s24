@@ -31,7 +31,7 @@ echo -e "\ntask2a (expected / actual)"
 diff -yw <(echo -e "17") ag_out && echo "SUCCESS: task2 a"
 
 
-echo -e "   \t" > test2b  #5
+echo -e " \t  \t" > test2b  #5
 ./task2 test2b > ag_out
 echo -e "\ntask2b (expected / actual)"
 diff -yw <(echo -e "5") ag_out && echo "SUCCESS: task2 b"
