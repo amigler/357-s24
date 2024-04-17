@@ -22,6 +22,21 @@ fi
 rm -f out_* test_*
 
 ((total++))
+gcc word_count.c -o wc357 && echo -e "a aa\nbbbb\nc\n\naaa, 123\n" > test_wc1
+timeout 10s ./wc357 < test_wc1 > out_actual
+wc < test_wc1 | awk '{print $1,$2,$3}' > out_expected
+diff -y --suppress-common-lines out_actual out_expected
+if [ $? -ne 0 ]; then
+    echo "ERROR: wc1.stdin (actual / expected shown above)"
+    ((red++));
+else
+    echo "SUCCESS: wc1.stdin"
+    ((green++));
+fi
+
+rm -f out_* test_*
+
+((total++))
 timeout 10s ./wc357 word_count.c > out_actual
 wc word_count.c | awk '{print $1,$2,$3}' > out_expected
 diff -y --suppress-common-lines out_actual out_expected
@@ -48,9 +63,10 @@ else
     ((green++));
 fi
 
-rm -f out_* test_*
 
 gcc uniq.c -o uniq357
+
+rm -f out_* test_*
 
 ((total++))
 echo -e "a\naa\naa\naa\nb\naa\na" > test_uniq1
@@ -64,6 +80,22 @@ else
     echo "SUCCESS: uniq1"
     ((green++));
 fi
+
+rm -f out_* test_*
+
+((total++))
+echo -e "a\naa\naa\naa\nb\naa\na" > test_uniq1
+timeout 10s ./uniq357 < test_uniq1 > out_actual
+uniq < test_uniq1 > out_expected
+diff -y --suppress-common-lines out_actual out_expected
+if [ $? -ne 0 ]; then
+    echo "ERROR: uniq1.stdin (actual / expected shown above)"
+    ((red++));
+else
+    echo "SUCCESS: uniq1.stdin"
+    ((green++));
+fi
+
 
 rm -f out_* test_*
 
