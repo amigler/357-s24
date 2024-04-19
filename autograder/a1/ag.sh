@@ -95,7 +95,7 @@ rm -f out_* test_*
 
 ((total++))
 uniq uniq.c > out_expected
-timeout 10s ./uniq357 uniq.c > out_actual && diff -y --suppress-common-lines out_actual out_expected
+timeout 10s ./uniq357 uniq.c > out_actual && diff -y --suppress-common-lines -Z out_actual out_expected
 if [ $? -ne 0 ]; then
     echo "ERROR: uniq2 (actual / expected shown above)"
     ((red++));
