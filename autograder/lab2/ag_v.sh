@@ -2,7 +2,8 @@
 
 rm -f task1 task2 ag_out
 
-sudo apt install valgrind
+sudo apt-get update
+sudo apt-get install valgrind
 
 red=0
 green=0
