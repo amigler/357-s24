@@ -16,9 +16,8 @@ int main(int argc, char *argv[]) {
     printf("Initially: str1 = %s, str2 = %s, p1 = %s, p2 = %s\n", str1, str2, p1, p2);
     printf("Initially, as pointers: str1 = %p, str2 = %p, p1 = %p, p2 = %p\n", str1, str2, p1, p2);
 
-    // p1 = p2;  // valid but does not copy string
-    //str1 = str2; // not valid
-  
+    // p1 = p2;  // compiles but does not copy string
+    // str1 = str2; // not valid
     strcpy(str1, str2);  // ok
     // strcpy(p1, p2);  // ok (same behavior)
 
