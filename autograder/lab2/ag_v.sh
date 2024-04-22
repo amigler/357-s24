@@ -2,8 +2,8 @@
 
 rm -f task1 task2 ag_out
 
-sudo apt-get update
-sudo apt-get install valgrind
+sudo apt-get update > /dev/null
+sudo apt-get install valgrind > /dev/null
 
 red=0
 green=0
@@ -89,8 +89,15 @@ else
     ((green++));
 fi
 
-valgrind ./task2 empty_file > ag_out
-cat ag_out
+valgrind --leak-check=yes ./task2 empty_file 2>&1 | grep "ERROR SUMMARY" | cut -d' ' -f4-5 > out_valgrind
+diff -yw <(echo "0 errors") out_valgrind
+if [ $? -ne 0 ]; then
+    ((red++));
+else
+    echo "SUCCESS: valgrind 2"
+    ((green++));
+fi
+
 
 echo $green out of $total tests passed
 
