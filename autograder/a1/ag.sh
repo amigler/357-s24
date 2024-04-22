@@ -67,7 +67,8 @@ rm -f out_* test_*
 ((total++))
 echo -e "a\naa\naa\naa\nb\naa\na" > test_uniq1
 uniq test_uniq1 > out_expected
-timeout 10s ./uniq357 test_uniq1 > out_actual && diff -y --suppress-common-lines out_actual out_expected
+timeout 10s ./uniq357 test_uniq1 > out_actual
+diff -y --suppress-common-lines out_actual out_expected
 if [ $? -ne 0 ]; then
     echo "ERROR: uniq1 (actual / expected shown above)"
     ((red++));
@@ -81,7 +82,8 @@ rm -f out_* test_*
 ((total++))
 echo -e "a\naa\naa\naa\nb\naa\na" > test_uniq1
 uniq < test_uniq1 > out_expected
-timeout 10s ./uniq357 < test_uniq1 > out_actual && diff -y --suppress-common-lines out_actual out_expected
+timeout 10s ./uniq357 < test_uniq1 > out_actual
+diff -y --suppress-common-lines out_actual out_expected
 if [ $? -ne 0 ]; then
     echo "ERROR: uniq1.stdin (actual / expected shown above)"
     ((red++));
@@ -95,7 +97,8 @@ rm -f out_* test_*
 
 ((total++))
 uniq uniq.c > out_expected
-timeout 10s ./uniq357 uniq.c > out_actual && diff -y --suppress-common-lines -Z out_actual out_expected
+timeout 10s ./uniq357 uniq.c > out_actual
+diff -y --suppress-common-lines -Z out_actual out_expected
 if [ $? -ne 0 ]; then
     echo "ERROR: uniq2 (actual / expected shown above)"
     ((red++));
@@ -109,7 +112,8 @@ rm -f out_* test_*
 ((total++))
 echo -e "a\na\na\na\n\naa\naa\na\na\n" > test_uniq3
 uniq test_uniq3 > out_expected
-timeout 10s ./uniq357 test_uniq3 > out_actual && diff -y --suppress-common-lines out_actual out_expected
+timeout 10s ./uniq357 test_uniq3 > out_actual
+diff -y --suppress-common-lines out_actual out_expected
 if [ $? -ne 0 ]; then
     echo "ERROR: uniq3 (actual / expected shown above)"
     ((red++));
