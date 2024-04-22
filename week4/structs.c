@@ -3,7 +3,8 @@
 
 int main(int argc, char *argv[]) {
     struct s {
-        char c, c2;
+        int i;
+        char c, c2, c3, c4;
     };
 
     printf("sizeof(int) = %lu\n", sizeof(int));
@@ -28,6 +29,5 @@ int main(int argc, char *argv[]) {
     printf("sizeof(var) = %lu\n", sizeof(var));
     printf("sizeof(vars) = %lu\n", sizeof(vars));
 
-    
     return EXIT_SUCCESS;
 }

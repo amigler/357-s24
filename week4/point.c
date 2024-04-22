@@ -19,6 +19,9 @@ int main(int argc, char *argv[]) {
 
     struct rect the_rect;
     struct point middle;
+
+    //int rect_x1, rect_y1, rect_x2, rect_y2;
+    //int middle_y, middle_y;  // ...
     
     the_rect.pt1 = makepoint(0,0);
     the_rect.pt2 = makepoint(1024, 512);
@@ -28,6 +31,10 @@ int main(int argc, char *argv[]) {
 
     printf("the_rect: (%d, %d) (%d, %d) \n", the_rect.pt1.x, the_rect.pt1.y, the_rect.pt2.x, the_rect.pt2.y);
     printf("middle: (%d, %d) \n", middle.x, middle.y);
+
+    printf("sizeof(int): %lu \n", sizeof(int));
+    printf("sizeof(struct point): %lu \n", sizeof(struct point));
+    printf("sizeof(the_rect): %lu \n", sizeof(the_rect));
     
     return EXIT_SUCCESS;
 }
