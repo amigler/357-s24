@@ -10,9 +10,11 @@ rm -f out_actual fs_simulator
 
 if [ "$1" = "valgrind" ]; then
 
-  sudo apt-get -yq update
-  sudo apt-get -yq install valgrind
-
+  echo "Installing valgrind..."
+  sudo apt-get -yq update > /dev/null
+  sudo apt-get -yq install valgrind > /dev/null
+  echo "Done installing valgrind"
+  
   ((total++))
   make
   timeout 10s valgrind --leak-check=yes ./fs_simulator ag_fs1 < ag_input 2>&1 | grep "ERROR SUMMARY" | cut -d' ' -f4-5 > out_valgrind
