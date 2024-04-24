@@ -1,8 +1,5 @@
 #! /bin/bash
 
-sudo apt-get update > /dev/null
-sudo apt-get install valgrind > /dev/null
-
 wget -O ag_tests.tgz -q https://github.com/amigler/357-f23/raw/main/autograder/a2/ag_tests.tgz && tar -xf ag_tests.tgz
 
 red=0
@@ -11,17 +8,38 @@ total=0
 
 rm -f out_actual fs_simulator
 
-((total++))
-make
-timeout 10s ./fs_simulator ag_fs1 < ag_input > out_actual
-diff -y --suppress-common-lines out_actual ag_output
-if [ $? -ne 0 ]; then
+if [ "$1" = "valgrind" ]; then
+
+  sudo apt-get -yq update
+  sudo apt-get -yq install valgrind
+
+  ((total++))
+  make
+  timeout 10s valgrind --leak-check=yes ./fs_simulator ag_fs1 < ag_input 2>&1 | grep "ERROR SUMMARY" | cut -d' ' -f4-5 > out_valgrind
+  diff -yw <(echo "0 errors") out_valgrind
+  if [ $? -ne 0 ]; then
+    ((red++));
+  else
+    echo "SUCCESS: valgrind 1"
+    ((green++));
+  fi
+
+else
+
+  ((total++))
+  make
+  timeout 10s ./fs_simulator ag_fs1 < ag_input > out_actual
+  diff -y --suppress-common-lines out_actual ag_output
+  if [ $? -ne 0 ]; then
     echo "ERROR: fs_simulator1 (actual / expected shown above)"
     ((red++));
-else
+  else
     echo "SUCCESS: fs_simulator1"
     ((green++));
+  fi
+
 fi
+
 
 echo $green out of $total tests passed
 
