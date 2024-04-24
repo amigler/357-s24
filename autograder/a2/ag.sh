@@ -17,6 +17,11 @@ if [ "$1" = "valgrind" ]; then
   
   ((total++))
   make
+  if [ $? -ne 0 ]; then
+    echo "ERROR: make"
+    exit 1
+  fi
+  
   timeout 10s valgrind --leak-check=yes ./fs_simulator ag_fs1 < ag_input 2>&1 | grep "ERROR SUMMARY" | cut -d' ' -f4-5 > out_valgrind
   diff -yw <(echo "0 errors") out_valgrind
   if [ $? -ne 0 ]; then
@@ -30,6 +35,11 @@ else
 
   ((total++))
   make
+  if [ $? -ne 0 ]; then
+    echo "ERROR: make"
+    exit 1
+  fi
+  
   timeout 10s ./fs_simulator ag_fs1 < ag_input > out_actual
   diff -y --suppress-common-lines out_actual ag_output
   if [ $? -ne 0 ]; then
