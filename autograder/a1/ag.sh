@@ -122,6 +122,38 @@ else
     ((green++));
 fi
 
+
+if ! command -v valgrind &> /dev/null ; then
+    echo "Installing valgrind..."
+    sudo apt-get -yq update > /dev/null
+    sudo apt-get -yq install valgrind > /dev/null
+    echo "Done installing valgrind"
+fi
+    
+((total++))
+rm -f out_valgrind
+timeout 10s valgrind --leak-check=full ./wc357 word_count.c 2>&1 | grep "ERROR SUMMARY" | cut -d' ' -f4-5 > out_valgrind
+diff -yw <(echo "0 errors") out_valgrind
+if [ $? -ne 0 ]; then
+    ((red++));
+    echo "ERROR: word_count valgrind"
+else
+    echo "SUCCESS: word_count valgrind"
+    ((green++));
+fi
+
+((total++))
+rm -f out_valgrind
+timeout 10s valgrind --leak-check=full ./uniq357 uniq.c 2>&1 | grep "ERROR SUMMARY" | cut -d' ' -f4-5 > out_valgrind
+diff -yw <(echo "0 errors") out_valgrind
+if [ $? -ne 0 ]; then
+    ((red++));
+    echo "ERROR: uniq valgrind"
+else
+    echo "SUCCESS: uniq valgrind"
+    ((green++));
+fi
+
 echo $green out of $total tests passed
 
 if [ $red -ne 0 ]; then

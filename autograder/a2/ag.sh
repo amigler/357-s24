@@ -10,36 +10,39 @@ rm -f out_actual fs_simulator
 
 if [ "$1" = "valgrind" ]; then
 
-  echo "Installing valgrind..."
-  sudo apt-get -yq update > /dev/null
-  sudo apt-get -yq install valgrind > /dev/null
-  echo "Done installing valgrind"
+  if ! command -v valgrind &> /dev/null ; then
+    echo "Installing valgrind..."
+    sudo apt-get -yq update > /dev/null
+    sudo apt-get -yq install valgrind > /dev/null
+    echo "Done installing valgrind"
+  fi
   
-  ((total++))
   make
   if [ $? -ne 0 ]; then
     echo "ERROR: make"
     exit 1
   fi
-  
-  timeout 10s valgrind --leak-check=yes ./fs_simulator ag_fs1 < ag_input 2>&1 | grep "ERROR SUMMARY" | cut -d' ' -f4-5 > out_valgrind
+
+  ((total++))
+  rm -f out_valgrind
+  timeout 10s valgrind --leak-check=full ./fs_simulator ag_fs1 < ag_input 2>&1 | grep "ERROR SUMMARY" | cut -d' ' -f4-5 > out_valgrind
   diff -yw <(echo "0 errors") out_valgrind
   if [ $? -ne 0 ]; then
     ((red++));
   else
-    echo "SUCCESS: valgrind 1"
+    echo "SUCCESS: valgrind"
     ((green++));
   fi
 
 else
 
-  ((total++))
   make
   if [ $? -ne 0 ]; then
     echo "ERROR: make"
     exit 1
   fi
-  
+
+  ((total++))
   timeout 10s ./fs_simulator ag_fs1 < ag_input > out_actual
   diff -y --suppress-common-lines out_actual ag_output
   if [ $? -ne 0 ]; then

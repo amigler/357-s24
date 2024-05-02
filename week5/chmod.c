@@ -20,6 +20,12 @@ int main(int argc, char *argv[]) {
     if (chmod("bar", S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH) < 0) {
         printf("chmod error for bar");
     }
+
+    printf("S_IRUSR = %d\n", S_IRUSR);
+    
+    if (chmod("foo", 0664) < 0) {
+        printf("chmod error for foo");
+    }
     
     return EXIT_SUCCESS;
 }
