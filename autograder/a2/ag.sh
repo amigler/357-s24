@@ -26,9 +26,10 @@ if [ "$1" = "valgrind" ]; then
   ((total++))
   rm -f out_valgrind
   timeout 10s valgrind --leak-check=full ./fs_simulator ag_fs1 < ag_input 2>&1 | grep "ERROR SUMMARY" | cut -d' ' -f4-5 > out_valgrind
-  diff -yw <(echo "0 errors") out_valgrind
+  diff -yw out_valgrind <(echo "0 errors") 
   if [ $? -ne 0 ]; then
     ((red++));
+    echo "ERROR: valgrind errors found"
   else
     echo "SUCCESS: valgrind"
     ((green++));
