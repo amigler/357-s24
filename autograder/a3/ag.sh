@@ -21,6 +21,14 @@ fi
 
 if [ "$1" = "valgrind" ]; then
 
+  rm -f out_actual
+  timeout 10s ./tree ag_tree1 > out_actual
+  diff -y out_actual ag_expected1.txt
+  if [ $? -ne 0 ]; then
+    echo "Tree functionality incomplete, valgrind check skipped"
+    exit 1
+  fi
+
   if ! command -v valgrind &> /dev/null ; then
     echo "Installing valgrind..."
     sudo apt-get -yq update > /dev/null
