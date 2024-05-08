@@ -28,14 +28,14 @@ int main(int argc, char *argv[]) {
 
     free(the_copy);
 
-    *the_copy = 5;
+    //*the_copy = 5;  // use after free (an unsafe operation)
     
     printf("the_copy - after free = %p\n", the_copy);
     printf("the_copy[0] - after free = %d\n", the_copy[0]);
     
     the_copy = NULL;
     
-    int *new_mem =  (int *) malloc(30 * sizeof(int));
+    int *new_mem =  (int *) malloc(3000 * sizeof(int));
     printf("new_mem = %p\n", new_mem);
 
     printf("new_mem = %d\n", *new_mem);
