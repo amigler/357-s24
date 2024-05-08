@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
         // read integers from file
         FILE *fp = fopen(argv[1], "rb");
         if (fp == NULL) {
-            printf("Unable to open file, %s\n", argv[2]);
+            printf("Unable to open file, %s\n", argv[1]);
             return EXIT_FAILURE;
         }        
         read_ints(fp);
