@@ -20,15 +20,15 @@ int main(int argc, char *argv[]) {
     ip[0] = 10;
     ip[2] = 20;
     printf("%d\n", ip[0]);
-    
 
-    /*
     str[0] = 'B';
     str[1] = 'B';
     str[2] = '\0';
     printf("%s\n", str);    
-    free(str);
-    */
+    //free(str);
+
+    printf("%d\n", ip[2]);
+   
     
     return 0;
 }

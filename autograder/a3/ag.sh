@@ -21,9 +21,14 @@ fi
 
 if [ "$1" = "valgrind" ]; then
 
+  echo "Valgrind check will be run with both command line arguments: ./tree -a -s"
+
+  mkdir -p ag_tree1/tmp/a/b/c/.d/e/f/g
+  mkdir -p ag_tree1/.a/.b/.c/.d
+  
   rm -f out_actual
-  timeout 10s ./tree ag_tree1 > out_actual
-  diff -y out_actual ag_expected1.txt
+  timeout 10s ./tree -a -s ag_tree1 > out_actual
+  diff -y out_actual <(tree -n -a -s --charset=ascii ag_tree1)
   if [ $? -ne 0 ]; then
     echo "Tree functionality incomplete, valgrind check skipped"
     exit 1
@@ -38,7 +43,7 @@ if [ "$1" = "valgrind" ]; then
   
   ((total++))
   rm -f out_valgrind
-  timeout 10s valgrind --leak-check=full ./tree ag_tree1 2>&1 | grep "ERROR SUMMARY" | cut -d' ' -f4-5 > out_valgrind
+  timeout 10s valgrind --leak-check=full ./tree ag_tree1 -a -s 2>&1 | grep "ERROR SUMMARY" | cut -d' ' -f4-5 > out_valgrind
   diff -yw out_valgrind <(echo "0 errors") 
   if [ $? -ne 0 ]; then
     ((red++));
@@ -50,6 +55,8 @@ if [ "$1" = "valgrind" ]; then
 
 elif [ "$1" = "arg_a" ]; then
 
+  mkdir -p ag_tree1/tmp/.a/b/c/.d/e/f/g
+  
   ((total++))
   rm -f out_actual  
   timeout 10s ./tree -a ag_tree1 > out_actual
