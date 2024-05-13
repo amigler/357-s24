@@ -19,6 +19,7 @@ int main(int argc, char *argv[]) {
     int *ip = (int *) str;
     ip[0] = 10;
     ip[2] = 20;
+    ip[200] = 200;
     printf("%d\n", ip[0]);
 
     str[0] = 'B';
@@ -28,7 +29,7 @@ int main(int argc, char *argv[]) {
     //free(str);
 
     printf("%d\n", ip[2]);
-   
+    printf("%d\n", ip[200]);
     
     return 0;
 }
