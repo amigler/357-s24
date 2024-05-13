@@ -28,7 +28,7 @@ if [ "$1" = "valgrind" ]; then
   
   rm -f out_actual
   timeout 10s ./tree -a -s ag_tree1 > out_actual
-  diff -y out_actual <(tree -n -a -s --charset=ascii ag_tree1)
+  diff -a -y out_actual <(tree -n -a -s --charset=ascii ag_tree1)
   if [ $? -ne 0 ]; then
     echo "Tree functionality incomplete, valgrind check skipped"
     exit 1
@@ -44,7 +44,7 @@ if [ "$1" = "valgrind" ]; then
   ((total++))
   rm -f out_valgrind
   timeout 10s valgrind --leak-check=full ./tree ag_tree1 -a -s 2>&1 | grep "ERROR SUMMARY" | cut -d' ' -f4-5 > out_valgrind
-  diff -yw out_valgrind <(echo "0 errors") 
+  diff -a -yw out_valgrind <(echo "0 errors") 
   if [ $? -ne 0 ]; then
     ((red++));
     echo "ERROR: valgrind tree errors found"
@@ -60,7 +60,7 @@ elif [ "$1" = "arg_a" ]; then
   ((total++))
   rm -f out_actual  
   timeout 10s ./tree -a ag_tree1 > out_actual
-  diff -y out_actual <(tree -a --charset=ascii ag_tree1)
+  diff -a -y out_actual <(tree -a --charset=ascii ag_tree1)
   if [ $? -ne 0 ]; then
     echo "ERROR: tree -a (actual / expected shown above)"
     ((red++));
@@ -75,7 +75,7 @@ elif [ "$1" = "arg_s" ]; then
   ((total++))
   rm -f out_actual
   timeout 10s ./tree -s ag_tree1 > out_actual
-  diff -y out_actual <(tree -n -s --charset=ascii ag_tree1)
+  diff -a -y out_actual <(tree -n -s --charset=ascii ag_tree1)
   if [ $? -ne 0 ]; then
     echo "ERROR: tree -s (actual / expected shown above)"
     ((red++));
@@ -89,7 +89,7 @@ else
   ((total++))
   rm -f out_actual
   timeout 10s ./tree ag_tree1 > out_actual
-  diff -y out_actual ag_expected1.txt
+  diff -a -y out_actual ag_expected1.txt
   if [ $? -ne 0 ]; then
     echo "ERROR: tree (actual / expected shown above)"
     ((red++));
