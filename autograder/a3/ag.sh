@@ -46,11 +46,13 @@ if [ "$1" = "valgrind" ]; then
   
   ((total++))
   rm -f out_valgrind
-  timeout 10s valgrind --leak-check=full ./tree ag_tree1 -a -s 2>&1 | grep "ERROR SUMMARY" | cut -d' ' -f4-5 > out_valgrind
+  timeout 10s valgrind --leak-check=full ./tree ag_tree1 -a -s 2>&1 > out_valgrind_all
+  cat out_valgrind_all | grep "ERROR SUMMARY" | cut -d' ' -f4-5 > out_valgrind
   diff -a -yw out_valgrind <(echo "0 errors") 
   if [ $? -ne 0 ]; then
     ((red++));
     echo "ERROR: valgrind tree errors found"
+    cat out_valgrind_all
   else
     echo "SUCCESS: valgrind tree"
     ((green++));
