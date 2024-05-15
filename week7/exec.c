@@ -11,14 +11,14 @@ int main(void) {
     
     if ((pid = fork()) < 0) {
         printf("fork error");
-    } else if (pid == 0) { /* specify pathname, specify environment */
-        if (execle("/home/ubuntu/357/357-f23/week6/echoall",
+    } else if (pid == 0) {
+        /* specify pathname, specify environment */
+        if (execle("/home/ubuntu/357-s24/week7/echoall",
                    "echoall", "arg1", "MY ARG2", (char *)0,  // becomes argv[]
                    env_init) < 0) {
             printf("execle error");
         }
-        printf("...");
-        // would not run
+        printf("after the exec in the child");  // would not run if exec succeeds
     }
 
     // wait for child
@@ -31,7 +31,7 @@ int main(void) {
     } else if (pid == 0) { /* specify filename, inherit environment */
         char *my_argv[] = { "echoall", "just 1 arg", (char*) 0 };
         if (execv("./echoall", my_argv) < 0) {
-            printf("execlp error");
+            printf("execv error");
         }
     }
     

@@ -30,6 +30,9 @@ if [ "$1" = "valgrind" ]; then
   timeout 10s ./tree -a -s ag_tree1 > out_actual
   diff -a -y out_actual <(tree -n -a -s --charset=ascii ag_tree1)
   if [ $? -ne 0 ]; then
+
+    diff -a -y out_actual <(tree -n -a -s --charset=ascii ag_tree1) | cat -t
+      
     echo "Tree functionality incomplete, valgrind check skipped"
     exit 1
   fi

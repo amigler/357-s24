@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int globvar = 6; /* external variable in initialized data */
+int globvar = 6;
 char buf[] = "unbuffered write() to stdout\n";
 
 int  main(void) {
@@ -16,14 +16,13 @@ int  main(void) {
      }
 
      printf("before fork");
-     fflush(stdout);
 
      pid = fork();
      if (pid < 0) {
          printf("fork error\n");
      } else if (pid == 0) { /* child */
          printf("(child) pid = %d\n", pid);
-         globvar++;  /* modify variables */
+         globvar++;  /* modify variables (only affects child process) */
          var++;
          
      } else {  /* parent */
