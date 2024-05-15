@@ -46,7 +46,7 @@ if [ "$1" = "valgrind" ]; then
   
   ((total++))
   rm -f out_valgrind
-  timeout 10s valgrind --leak-check=full ./tree ag_tree1 -a -s 2>&1 | grep "ERROR SUMMARY" | cut -d' ' -f4-5 > out_valgrind
+  timeout 10s valgrind --leak-check=full ./tree -a -s ag_tree1 2>&1 | grep "ERROR SUMMARY" | cut -d' ' -f4-5 > out_valgrind
   diff -a -yw out_valgrind <(echo "0 errors") 
   if [ $? -ne 0 ]; then
     ((red++));
