@@ -52,7 +52,7 @@ if [ "$1" = "valgrind" ]; then
   if [ $? -ne 0 ]; then
     ((red++));
     echo "ERROR: valgrind tree errors found"
-    cat out_valgrind_all
+    # cat out_valgrind_all
   else
     echo "SUCCESS: valgrind tree"
     ((green++));
