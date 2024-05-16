@@ -76,10 +76,12 @@ elif [ "$1" = "arg_a" ]; then
 
 elif [ "$1" = "arg_s" ]; then
 
+  echo "Note: skipping first line in comparison (tree v1.7 versus 2.0)";
+    
   ((total++))
   rm -f out_actual
-  timeout 10s ./tree -s ag_tree1 > out_actual
-  diff -a -y out_actual <(tree -n -s --charset=ascii ag_tree1)
+  timeout 10s ./tree -s ag_tree1 | tail -n +2 > out_actual  # skip first line
+  diff -a -y out_actual <(tree -n -s --charset=ascii ag_tree1 | tail -n +2)
   if [ $? -ne 0 ]; then
     echo "ERROR: tree -s (actual / expected shown above)"
     ((red++));
