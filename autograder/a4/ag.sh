@@ -50,7 +50,7 @@ elif [ "$1" = "concurrent" ]; then
 
     echo -e "ag_file1 https://httpbin.org/delay/10\nag_file2 https://httpbin.org/delay/10\nag_file3 https://httpbin.org/delay/10" > ag_delays.txt
 
-    echo -e "305 ag_file1\n305 ag_file1\n305 ag_file1" > ag_delays_expected
+    echo -e "308 ag_file1\n308 ag_file2\n308 ag_file3" > ag_delays_expected
     
     ((total++))
     rm -f out_actual out_ag_files ag_file*
