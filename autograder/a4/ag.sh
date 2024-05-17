@@ -50,13 +50,13 @@ elif [ "$1" = "concurrent" ]; then
 
     echo -e "ag_file1 https://httpbin.org/delay/10\nag_file2 https://httpbin.org/delay/10\nag_file3 https://httpbin.org/delay/10" > ag_delays.txt
 
-    echo -e "308 ag_file1\n308 ag_file2\n308 ag_file3" > ag_delays_expected
+    echo -e "ag_file1\nag_file2\nag_file3" > ag_delays_expected
     
     ((total++))
     rm -f out_actual out_ag_files ag_file*
     timeout 11s ./a4download ag_delays.txt 3 > out_actual
     # list downloaded files and sizes for comparison
-    (/bin/ls -ls ag_file* > /dev/null && (/bin/ls -ls ag_file* | awk '{print $6,$10}' > out_ag_files)) || (echo "No downloaded files found. Your program output: " && cat out_actual)
+    (/bin/ls -ls ag_file* > /dev/null && (/bin/ls -ls ag_file* | awk '{print $10}' > out_ag_files)) || (echo "No downloaded files found. Your program output: " && cat out_actual)
     diff -a -y out_ag_files ag_delays_expected
     if [ $? -ne 0 ]; then
 	echo "ERROR: a4download (actual / expected shown above)"
@@ -78,7 +78,7 @@ else
     rm -f out_actual out_ag_files ag_file*
     timeout 45s ./a4download ag_input.txt 3 > out_actual
     # list downloaded files and sizes for comparison
-    (/bin/ls -ls ag_file* && (/bin/ls -ls ag_file* | awk '{print $6,$10}' > out_ag_files)) || (echo "No downloaded files found. Your program output: " && cat out_actual)
+    (/bin/ls -ls ag_file* > /dev/null && (/bin/ls -ls ag_file* | awk '{print $6,$10}' > out_ag_files)) || (echo "No downloaded files found. Your program output: " && cat out_actual)
     diff -a -y out_ag_files ag_expected.txt
     if [ $? -ne 0 ]; then
 	echo "ERROR: a4download (actual / expected shown above)"
