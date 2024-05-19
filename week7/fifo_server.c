@@ -19,7 +19,7 @@ int main(int argc, char* argv[])
     char *server_fifo = argv[1];
 
     printf("creating fifo at: %s\n", server_fifo);
-    mkfifo(server_fifo, 0666);
+    mkfifo(server_fifo, 0660);
 
     fifo_fd = open(server_fifo, O_RDWR);
     while((n = read(fifo_fd, buf, BUFSIZ)) != EOF && n > 0) {

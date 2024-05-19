@@ -12,6 +12,9 @@ int main(int argc, char *argv[]) {
     if (argc == 2) {
         // read integers from file
         FILE *fp = fopen(argv[1], "rb");
+
+        sleep(60);
+        
         if (fp == NULL) {
             printf("Unable to open file, %s\n", argv[1]);
             return EXIT_FAILURE;
