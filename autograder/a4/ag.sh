@@ -69,7 +69,7 @@ elif [ "$1" = "concurrent" ]; then
 elif [ "$1" = "style" ]; then
 
     echo "Review will be performed manually, based on the following:"
-    echo " - Internally consisistent code formatting / variable naming conventions"
+    echo " - Internally consistent code formatting / variable naming conventions"
     echo " - Appropriate functional decomposition decomposition (ie. no large blocks of duplicated code)"
     echo " - Clarity of logic and execution paths (ie. no deeply-nested, difficult-to-read conditional statements or loops)"
     exit 1

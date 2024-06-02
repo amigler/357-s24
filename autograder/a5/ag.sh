@@ -34,15 +34,17 @@ elif [ "$1" = "delay_endpoint" ]; then
 
 elif [ "$1" = "error_handling" ]; then
 
-    echo "(to be performed manually)"
+    echo "(review to be performed manually)"
     exit 1
 
 elif [ "$1" = "style" ]; then
 
-    echo "(to be performed manually)"
+    echo "Review will be performed manually, based on the following:"
+    echo " - Internally consistent code formatting / variable naming conventions"
+    echo " - Appropriate functional decomposition decomposition (ie. no large blocks of duplicated code)"
+    echo " - Clarity of logic and execution paths (ie. no deeply-nested, difficult-to-read conditional statements or loops)"
     exit 1
-
-    
+        
 else
 
     # HTTP GET
