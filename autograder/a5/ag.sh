@@ -57,7 +57,7 @@ elif [ "$1" = "head_request" ]; then
     ./httpd 9001 &
 
     ((total++))
-    timeout 2 curl -s -I http://localhost:9001/a5_tests.tgz > ag_HEAD_out
+    timeout 2 curl -s -I http://localhost:9001/a5_tests.tgz | tr -d '\r' > ag_HEAD_out
     diff -a -yw ag_HEAD_out <(echo "HTTP/1.1 200 OK
 Content-Type: text/html
 Content-Length: 1086
@@ -106,7 +106,7 @@ elif [ "$1" = "error_handling" ]; then
     ./httpd 9006 &
 
     ((total++))
-    timeout 2 curl -s -v http://localhost:9006/not_a_real_file 2>&1 | grep "^<" | head -1 | cut -c 3- > ag_GET_out
+    timeout 2 curl -s -v http://localhost:9006/not_a_real_file 2>&1 | grep "^<" | tr -d '\r' | head -1 | cut -c 3- > ag_GET_out
     diff -a -yw ag_GET_out <(echo "HTTP/1.1 404 Not Found")
     if [ $? -ne 0 ]; then
 	((red++));
@@ -121,7 +121,7 @@ elif [ "$1" = "error_handling" ]; then
     touch ag_test.txt
     
     ((total++))
-    timeout 2 curl -s -v http://localhost:9006/ag_dir/../ag_test.txt 2>&1 | grep "^<" | head -1 | cut -c 3- > ag_GET_out
+    timeout 2 curl -s -v http://localhost:9006/ag_dir/../ag_test.txt 2>&1 | grep "^<" | tr -d '\r' | head -1 | cut -c 3- > ag_GET_out
     diff -a -yw ag_GET_out <(echo "HTTP/1.1 404 Not Found")
     if [ $? -ne 0 ]; then
 	((red++));
@@ -132,7 +132,7 @@ elif [ "$1" = "error_handling" ]; then
     fi
     
     ((total++))
-    timeout 2 curl -s -v -X DELETE http://localhost:9006/not_a_real_file 2>&1 | grep "^<" | head -1 | cut -c 3- > ag_DELETE_out
+    timeout 2 curl -s -v -X DELETE http://localhost:9006/not_a_real_file 2>&1 | grep "^<" | tr -d '\r' | head -1 | cut -c 3- > ag_DELETE_out
     diff -a -yw ag_DELETE_out <(echo "HTTP/1.1 501 Not Implemented")
     if [ $? -ne 0 ]; then
 	((red++));
@@ -147,9 +147,9 @@ elif [ "$1" = "error_handling" ]; then
     diff -a -yw ag_INVALID_out <(echo "HTTP/1.1 400 Bad Request")
     if [ $? -ne 0 ]; then
 	((red++));
-	echo "ERROR: Invalid request"
+	echo "ERROR: Invalid HTTP request should return 400"
     else
-	echo "SUCCESS: Invalid request"
+	echo "SUCCESS: Invalid HTTP request should return 400"
 	((green++));
     fi
 
