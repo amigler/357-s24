@@ -25,10 +25,10 @@ if [ "$1" = "valgrind" ]; then
 
 elif [ "$1" = "head_request" ]; then
 
-    ./httpd 9000 &
+    ./httpd 9001 &
 
     ((total++))
-    timeout 2 curl -s -I http://localhost:9000/a5_tests.tgz > ag_HEAD_out
+    timeout 2 curl -s -I http://localhost:9001/a5_tests.tgz > ag_HEAD_out
     diff -a -yw ag_HEAD_out <(echo "HTTP/1.1 200 OK
 Content-Type: text/html
 Content-Length: 1086
@@ -42,7 +42,7 @@ Content-Length: 1086
     fi
 
     ((total++))
-    timeout 2 curl -s -I http://localhost:9000/not_a_real_file | head -1 > ag_HEAD_out
+    timeout 2 curl -s -I http://localhost:9001/not_a_real_file | head -1 > ag_HEAD_out
     diff -a -yw ag_HEAD_out <(echo "HTTP/1.1 404 Not Found")
     if [ $? -ne 0 ]; then
 	((red++));
@@ -55,10 +55,12 @@ Content-Length: 1086
     
 elif [ "$1" = "delay_endpoint" ]; then
 
-    echo "url = \"http://localhost:9000/delay/3\"
-url = \"http://localhost:9000/delay/3\"
-url = \"http://localhost:9000/delay/3\"
-url = \"http://localhost:9000/delay/3\"" > ag_delays.txt
+    ./httpd 9002 &
+    
+    echo "url = \"http://localhost:9002/delay/3\"
+url = \"http://localhost:9002/delay/3\"
+url = \"http://localhost:9002/delay/3\"
+url = \"http://localhost:9002/delay/3\"" > ag_delays.txt
 
     ((total++))
     timeout 4 curl -s --parallel --parallel-immediate --config ag_delays.txt | head -1 > ag_delay_out
