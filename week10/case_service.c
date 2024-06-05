@@ -19,6 +19,27 @@
 #define DEFAULT_BACKLOG 100
 void *handle_client_request(void *param);
 
+void upper(char *str) {
+    while (*str) {
+        *str &= 0x5f;  // convert char to upper case
+        str++;
+    }
+}
+
+void lower(char *str) {
+    while (*str) {
+        *str |= 0x20;  // lower case
+        str++;
+    }
+}
+
+void toggle(char *str) {
+    while (*str) {
+        *str ^= 0x20;  // toggle case
+        str++;
+    }
+}
+
 int main(int argc, char *argv[]) {
 
     if (argc < 2) {
@@ -62,36 +83,17 @@ int main(int argc, char *argv[]) {
         printf("client_socket: %d (%s:%d)\n", client_socket, client_addr, ntohs(client_sa.sin_port));
 
         // single-threaded, serial implementation
-        handle_client_request(&client_socket);
+        //handle_client_request(&client_socket);
 
-        //pthread_t client_thread;
-        //pthread_create(&client_thread, NULL, handle_client_request, &client_socket);
-        //pthread_detach(client_thread); // when a detached thread terminates, its resources are automatically released without a join        
+        pthread_t client_thread;
+        pthread_create(&client_thread, NULL, handle_client_request, &client_socket);
+        pthread_detach(client_thread); // when a detached thread terminates, its resources are automatically released without a join
+        
     }
     
     return EXIT_SUCCESS;
 }
 
-void upper(char *str) {
-    while (*str) {
-        *str &= 0x5f;  // convert char to upper case
-        str++;
-    }
-}
-
-void lower(char *str) {
-    while (*str) {
-        *str |= 0x20;  // lower case
-        str++;
-    }
-}
-
-void toggle(char *str) {
-    while (*str) {
-        *str ^= 0x20;  // toggle case
-        str++;
-    }
-}
 
 void *handle_client_request(void *param) {
     int client_socket = *((int *) param);
@@ -106,7 +108,7 @@ void *handle_client_request(void *param) {
     buf[bytes_read-2] = '\0';  // remove CR/NL
     printf("received: %s (%lu)\n", buf, bytes_read);
 
-    char *str = buf+1;
+    char *str = buf+2;
     if (buf[0] == 'U') {
         upper(str);
         sleep(5);
@@ -125,7 +127,7 @@ void *handle_client_request(void *param) {
     
     printf("sending response: %s\n", buf+2);
     
-    send(client_socket, buf+2, strlen(buf), 0);
+    send(client_socket, buf+2, strlen(buf+2), 0);
     close(client_socket);
     
     return NULL;
