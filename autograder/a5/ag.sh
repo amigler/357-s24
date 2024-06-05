@@ -1,6 +1,6 @@
 #! /bin/bash
 
-curl --version
+curl --version | head -1
 
 # a5 for spring 2024
 wget -O a5_tests.tgz -q https://github.com/amigler/csc357-s23/blob/main/a6/a6_tests.tgz?raw=true && tar -xf a5_tests.tgz
@@ -19,8 +19,37 @@ fi
 
 
 if [ "$1" = "valgrind" ]; then
+
+    if ! command -v valgrind &> /dev/null ; then
+	echo "Installing valgrind..."
+	sudo apt-get -yq update > /dev/null
+	sudo apt-get -yq install valgrind > /dev/null
+	echo "Done installing valgrind"
+    fi
+
     
-    echo "(autograder not yet fully configured)"
+    ((total++))
+    rm -f out_valgrind
+    timeout 5s valgrind --leak-check=full ./httpd 9004 2>&1 | grep "ERROR SUMMARY" | cut -d' ' -f4-5 | uniq > out_valgrind &
+
+    timeout 1 curl -s -I http://localhost:9004/a5_tests.tgz > ag_HEAD_out & 
+    timeout 1 curl -s http://localhost:9004/a5_tests.tgz > ag_GET_out &
+    timeout 1 curl -s http://localhost:9004/not_a_valid_file > ag_GET_out &
+    timeout 1 curl -s -X POST -d "POST data here" http://localhost:9004/not_a_valid_file > ag_GET_out &
+
+    sleep 6
+
+    killall -QUIT httpd  > /dev/null 2>&1
+    
+    diff -a -yw out_valgrind <(echo "0 errors") 
+    if [ $? -ne 0 ]; then
+	((red++));
+	echo "ERROR: valgrind errors found"
+    else
+	echo "SUCCESS: valgrind"
+	((green++));
+    fi
+    
     exit 1
 
 elif [ "$1" = "head_request" ]; then
@@ -74,8 +103,57 @@ url = \"http://localhost:9002/delay/3\"" > ag_delays.txt
     
 elif [ "$1" = "error_handling" ]; then
 
-    echo "(review to be performed manually)"
-    exit 1
+    ./httpd 9006 &
+
+    ((total++))
+    timeout 2 curl -s -v http://localhost:9006/not_a_real_file 2>&1 | grep "^<" | head -1 | cut -c 3- > ag_GET_out
+    diff -a -yw ag_GET_out <(echo "HTTP/1.1 404 Not Found")
+    if [ $? -ne 0 ]; then
+	((red++));
+	echo "ERROR: GET request for file that does not exist"
+    else
+	echo "SUCCESS: GET request for file that does not exist"
+	((green++));
+    fi
+
+    rm -rf ag_dir
+    mkdir ag_dir
+    touch ag_test.txt
+    
+    ((total++))
+    timeout 2 curl -s -v http://localhost:9006/ag_dir/../ag_test.txt 2>&1 | grep "^<" | head -1 | cut -c 3- > ag_GET_out
+    diff -a -yw ag_GET_out <(echo "HTTP/1.1 404 Not Found")
+    if [ $? -ne 0 ]; then
+	((red++));
+	echo "ERROR: GET request with directory traversal should return 404"
+    else
+	echo "SUCCESS: GET request with directory traversal should return 404"
+	((green++));
+    fi
+    
+    ((total++))
+    timeout 2 curl -s -v -X DELETE http://localhost:9006/not_a_real_file 2>&1 | grep "^<" | head -1 | cut -c 3- > ag_DELETE_out
+    diff -a -yw ag_DELETE_out <(echo "HTTP/1.1 501 Not Implemented")
+    if [ $? -ne 0 ]; then
+	((red++));
+	echo "ERROR: Invalid request type (DELETE)"
+    else
+	echo "SUCCESS: Invalid request type (DELETE)"
+	((green++));
+    fi
+
+    ((total++))
+    timeout 2 printf "NOT_A_VALID_REQUEST" | nc localhost 9006 > ag_INVALID_out
+    diff -a -yw ag_INVALID_out <(echo "HTTP/1.1 400 Bad Request")
+    if [ $? -ne 0 ]; then
+	((red++));
+	echo "ERROR: Invalid request"
+    else
+	echo "SUCCESS: Invalid request"
+	((green++));
+    fi
+
+    
 
 elif [ "$1" = "style" ]; then
 
