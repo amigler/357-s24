@@ -71,7 +71,7 @@ Content-Length: 1086
     fi
 
     ((total++))
-    timeout 2 curl -s -I http://localhost:9001/not_a_real_file | head -1 > ag_HEAD_out
+    timeout 2 curl -s -I http://localhost:9001/not_a_real_file | tr -d '\r' | head -1 > ag_HEAD_out
     diff -a -yw ag_HEAD_out <(echo "HTTP/1.1 404 Not Found")
     if [ $? -ne 0 ]; then
 	((red++));
