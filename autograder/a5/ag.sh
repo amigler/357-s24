@@ -35,7 +35,7 @@ if [ "$1" = "valgrind" ]; then
     timeout 1 curl -s -I http://localhost:9004/a5_tests.tgz > ag_HEAD_out & 
     timeout 1 curl -s http://localhost:9004/a5_tests.tgz > ag_GET_out &
     timeout 1 curl -s http://localhost:9004/not_a_valid_file > ag_GET_out &
-    timeout 1 curl -s -X POST -d "POST data here" http://localhost:9004/not_a_valid_file > ag_GET_out &
+    timeout 1 curl -s -X POST -d "POST data here" http://localhost:9004/not_a_valid_file > ag_POST_out &
 
     sleep 6
 
@@ -75,9 +75,9 @@ Content-Length: 1086
     diff -a -yw ag_HEAD_out <(echo "HTTP/1.1 404 Not Found")
     if [ $? -ne 0 ]; then
 	((red++));
-	echo "ERROR: HEAD request for file that does not exist"
+	echo "ERROR: HEAD request for file that does not exist should yield 404 error"
     else
-	echo "SUCCESS: HEAD request for file that does not exist"
+	echo "SUCCESS: HEAD request for file that does not exist yields 404 error"
 	((green++));
     fi
     
@@ -106,6 +106,8 @@ elif [ "$1" = "error_handling" ]; then
     ./httpd 9006 &
 
     ((total++))
+    echo ""
+    echo "Test Case #$total: GET /not_a_real_file HTTP/1.1"
     timeout 2 curl -s -v http://localhost:9006/not_a_real_file 2>&1 | grep "^<" | tr -d '\r' | head -1 | cut -c 3- > ag_GET_out
     diff -a -yw ag_GET_out <(echo "HTTP/1.1 404 Not Found")
     if [ $? -ne 0 ]; then
@@ -121,6 +123,8 @@ elif [ "$1" = "error_handling" ]; then
     touch ag_test.txt
     
     ((total++))
+    echo ""
+    echo "Test Case #$total: GET /ag_dir/../ag_test.txt HTTP/1.1"
     timeout 2 curl -s -v http://localhost:9006/ag_dir/../ag_test.txt 2>&1 | grep "^<" | tr -d '\r' | head -1 | cut -c 3- > ag_GET_out
     diff -a -yw ag_GET_out <(echo "HTTP/1.1 404 Not Found")
     if [ $? -ne 0 ]; then
@@ -132,7 +136,9 @@ elif [ "$1" = "error_handling" ]; then
     fi
     
     ((total++))
-    timeout 2 curl -s -v -X DELETE http://localhost:9006/not_a_real_file 2>&1 | grep "^<" | tr -d '\r' | head -1 | cut -c 3- > ag_DELETE_out
+    echo ""
+    echo "Test Case #$total: DELETE /ag_test.txt HTTP/1.1"
+    timeout 2 curl -s -v -X DELETE http://localhost:9006/ag_test.txt 2>&1 | grep "^<" | tr -d '\r' | head -1 | cut -c 3- > ag_DELETE_out
     diff -a -yw ag_DELETE_out <(echo "HTTP/1.1 501 Not Implemented")
     if [ $? -ne 0 ]; then
 	((red++));
@@ -143,7 +149,22 @@ elif [ "$1" = "error_handling" ]; then
     fi
 
     ((total++))
-    timeout 2 printf "NOT_A_VALID_REQUEST" | nc localhost 9006 > ag_INVALID_out
+    echo ""
+    echo "Test Case #$total: Invalid HTTP request (string: GET *)"
+    timeout 2 printf "GET *" | nc localhost 9006 > ag_INVALID_out
+    diff -a -yw ag_INVALID_out <(echo "HTTP/1.1 400 Bad Request")
+    if [ $? -ne 0 ]; then
+	((red++));
+	echo "ERROR: Invalid HTTP request should return 400"
+    else
+	echo "SUCCESS: Invalid HTTP request should return 400"
+	((green++));
+    fi
+
+    ((total++))
+    echo ""
+    echo "Test Case #$total: Invalid HTTP request (string: execlp(\"rm -rf *\"))"
+    timeout 2 printf "execlp(\"rm -rf *\")" | nc localhost 9006 > ag_INVALID_out
     diff -a -yw ag_INVALID_out <(echo "HTTP/1.1 400 Bad Request")
     if [ $? -ne 0 ]; then
 	((red++));
