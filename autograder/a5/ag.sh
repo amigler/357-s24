@@ -83,18 +83,25 @@ Content-Length: 1086
     
 elif [ "$1" = "delay_endpoint" ]; then
 
-    ./httpd 9002 &
-    
-    echo "url = \"http://localhost:9002/delay/3\"
-url = \"http://localhost:9002/delay/3\"
-url = \"http://localhost:9002/delay/3\"
-url = \"http://localhost:9002/delay/3\"" > ag_delays.txt
+    port=9004
+    ./httpd $port &
+
+    rm -f ag_delay_out*
+    timeout 3 curl -s -v http://localhost:$port/delay/2 2>&1 | grep "^<" | tr -d '\r' | head -1 | cut -c 3- > ag_delay_req1 &
+    timeout 3 curl -s -v http://localhost:$port/delay/2 2>&1 | grep "^<" | tr -d '\r' | head -1 | cut -c 3- > ag_delay_req2 &
+    timeout 3 curl -s -v http://localhost:$port/delay/2 2>&1 | grep "^<" | tr -d '\r' | head -1 | cut -c 3- > ag_delay_req3 &
+    timeout 3 curl -s -v http://localhost:$port/delay/2 2>&1 | grep "^<" | tr -d '\r' | head -1 | cut -c 3- > ag_delay_req4 &
+
+    sleep 4
 
     ((total++))
-    timeout 4 curl -s --parallel --parallel-immediate --config ag_delays.txt | head -1 > ag_delay_out
+    diff -a -yw <(awk '{print FILENAME" \"" $0"\""; nextfile}' ag_delay_req*) <(echo "ag_delay_req1 \"HTTP/1.1 200 OK\"
+ag_delay_req2 \"HTTP/1.1 200 OK\"
+ag_delay_req3 \"HTTP/1.1 200 OK\"
+ag_delay_req4 \"HTTP/1.1 200 OK\"")
     if [ $? -ne 0 ]; then
 	((red++));
-	echo "ERROR: Parallel requests for delay endpoint timed out"
+	echo "ERROR: Parallel requests for delay endpoint (4 parallel requests, actual / expected output above)"
     else
 	((green++));
 	echo "SUCCESS: Parallel requests for delay endpoint"
