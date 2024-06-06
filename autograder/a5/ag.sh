@@ -50,7 +50,6 @@ if [ "$1" = "valgrind" ]; then
 	((green++));
     fi
     
-    exit 1
 
 elif [ "$1" = "head_request" ]; then
 
