@@ -53,7 +53,7 @@ if [ "$1" = "valgrind" ]; then
 
 elif [ "$1" = "head_request" ]; then
 
-    ./httpd 9001 &
+    ./httpd 9001 > /dev/null 2>&1 &
 
     ((total++))
     timeout 2 curl -s -I http://localhost:9001/a5_tests.tgz | tr -d '\r' > ag_HEAD_out
@@ -84,7 +84,7 @@ Content-Length: 1086
 elif [ "$1" = "delay_endpoint" ]; then
 
     port=9004
-    ./httpd $port &
+    ./httpd $port > /dev/null 2>&1 &
 
     rm -f ag_delay_out*
     timeout 3 curl -s -v http://localhost:$port/delay/2 2>&1 | grep "^<" | tr -d '\r' | head -1 | cut -c 3- > ag_delay_req1 &
@@ -109,7 +109,7 @@ ag_delay_req4 \"HTTP/1.1 200 OK\"")
     
 elif [ "$1" = "error_handling" ]; then
 
-    ./httpd 9006 &
+    ./httpd 9006 > /dev/null 2>&1 &
 
     ((total++))
     echo ""
@@ -197,7 +197,7 @@ else
     rm -rf ag_out
     mkdir ag_out
     
-    ./httpd 9000 &
+    ./httpd 9000 > /dev/null 2>&1 &
     
     # download all .c files in local directory through httpd, compare to original
     for file in *.c *.sh; do
@@ -228,7 +228,6 @@ fi
 killall -QUIT httpd  > /dev/null 2>&1
 
 killall -9 httpd  > /dev/null 2>&1
-
 
 echo $green out of $total tests passed
 
