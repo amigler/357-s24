@@ -131,7 +131,7 @@ elif [ "$1" = "error_handling" ]; then
     ((total++))
     echo ""
     echo "Test Case #$total: GET /ag_dir/../ag_test.txt HTTP/1.1"
-    timeout 2 curl -s -v http://localhost:9006/ag_dir/../ag_test.txt 2>&1 | grep "^<" | tr -d '\r' | head -1 | cut -c 3- > ag_GET_out
+    timeout 2 curl -s -v --path-as-is http://localhost:9006/ag_dir/../ag_test.txt 2>&1 | grep "^<" | tr -d '\r' | head -1 | cut -c 3- > ag_GET_out
     diff -a -yw ag_GET_out <(echo "HTTP/1.1 404 Not Found")
     if [ $? -ne 0 ]; then
 	((red++));
