@@ -157,7 +157,7 @@ elif [ "$1" = "error_handling" ]; then
     ((total++))
     echo ""
     echo "Test Case #$total: Invalid HTTP request (string: GET *)"
-    timeout 2 printf "GET *" | nc localhost 9006 > ag_INVALID_out
+    timeout 2 printf "GET *" | nc localhost 9006 | tr -d '\r' | head -1 > ag_INVALID_out 
     diff -a -yw ag_INVALID_out <(echo "HTTP/1.1 400 Bad Request")
     if [ $? -ne 0 ]; then
 	((red++));
@@ -170,8 +170,8 @@ elif [ "$1" = "error_handling" ]; then
     ((total++))
     echo ""
     echo "Test Case #$total: Invalid HTTP request (string: execlp(\"rm -rf *\"))"
-    timeout 2 printf "execlp(\"rm -rf *\")" | nc localhost 9006 > ag_INVALID_out
-    diff -a -yw ag_INVALID_out <(echo "HTTP/1.1 400 Bad Request")
+    timeout 2 printf "execlp(\"rm -rf *\")" | nc localhost 9006 | tr -d '\r' | head -1 > ag_INVALID2_out
+    diff -a -yw ag_INVALID2_out <(echo "HTTP/1.1 400 Bad Request")
     if [ $? -ne 0 ]; then
 	((red++));
 	echo "ERROR: Invalid HTTP request should return 400"
