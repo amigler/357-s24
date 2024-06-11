@@ -212,6 +212,8 @@ else
 	    diff -q "ag_out/$file" "$file"
 	    if [ $? -ne 0 ]; then
 		echo "ERROR: GET $file"
+		ls -l $file
+		ls -l ag_out/$file
 		((red++));
 	    else
 		echo "SUCCESS: GET $file"
