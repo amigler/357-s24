@@ -13,7 +13,7 @@ echo -e "--task1--"
 gcc task1.c -o task1
 
 ((total++))
-./task1 here are -some command-line -arguments with some -dashes > ag_out
+timeout 1 ./task1 here are -some command-line -arguments with some -dashes > ag_out
 echo -e "\ntask1a (expected / actual)"
 diff -y <(echo -e "-some\n-arguments\n-dashes") ag_out
 if [ $? -ne 0 ]; then
@@ -24,7 +24,7 @@ else
 fi
 
 ((total++))
-./task1 no args with dashes > ag_out
+timeout 1 ./task1 no args with dashes > ag_out
 echo -e "\ntask1b (no output exected)"
 touch empty_file
 diff -yw empty_file ag_out 
@@ -36,7 +36,7 @@ else
 fi
 
 ((total++))
-./task1 -all -args -with -dashes > ag_out
+timeout 1 ./task1 -all -args -with -dashes > ag_out
 echo -e "\ntask1c (expected / actual)"
 diff -y <(echo -e "-all\n-args\n-with\n-dashes") ag_out 
 if [ $? -ne 0 ]; then
@@ -52,7 +52,7 @@ gcc task2.c -o task2
 
 ((total++))
 echo -e "   \t a a aaa\t \n       abc " > test2a #17
-./task2 test2a > ag_out
+timeout 1 ./task2 test2a > ag_out
 echo -e "\ntask2a (expected / actual)"
 diff -yw <(echo -e "17") ag_out 
 if [ $? -ne 0 ]; then
@@ -64,7 +64,7 @@ fi
 
 ((total++))
 echo -e " \t  \t" > test2b  #5
-./task2 test2b > ag_out
+timeout 1 ./task2 test2b > ag_out
 echo -e "\ntask2b (expected / actual)"
 diff -yw <(echo -e "5") ag_out 
 if [ $? -ne 0 ]; then
@@ -76,7 +76,7 @@ fi
 
 ((total++))
 touch empty_file
-./task2 empty_file > ag_out
+timeout 1 ./task2 empty_file > ag_out
 echo -e "\ntask2c (expected / actual)"
 diff -yw <(echo "0") ag_out 
 if [ $? -ne 0 ]; then
